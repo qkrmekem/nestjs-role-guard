@@ -10,12 +10,13 @@ export class PermissionsGuard implements CanActivate{
         console.log('PermissionsGuard 실행');
         const requirePermissions = this.reflect.getAllAndMerge(PERMISSIONS_KEY, [
             context.getHandler(),
-            context.getClass()
+            context.getClass(),
         ])
         if(!requirePermissions){
             return true;
         }
-        context.switchToHttp().getRequest
+        const {user} = context.switchToHttp().getRequest();
+        return requirePermissions.some((permission) => user?.permissions?.includes(permission));
     }
 
 }
